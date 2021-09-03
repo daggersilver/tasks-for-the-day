@@ -219,6 +219,46 @@ clearAll.addEventListener("click", ()=>{
     })
 })
 
+clearAll.addEventListener("contextmenu", (e)=>{
+    e.preventDefault();
+    const popup = `<div class="add-note-popup">
+                        <p>Do you want to clear all the finished tasks</p>
+                        
+                        <div>
+                            <button id="cancel" class="popup-buttons neutral-btn">Cancel</button>
+                            <button id="clear-tasklist" class="popup-buttons negative-btn">Clear</button>
+                        </div>
+                    </div>`
+
+    coverScreen.innerHTML = popup;
+    coverScreen.style.visibility = "visible";
+
+    coverScreen.firstChild.addEventListener("click", (e)=>{
+        e.stopPropagation();
+    })
+
+    let cancel = document.getElementById("cancel");
+    cancel.addEventListener("click", removePopup);
+
+    let clearAllBtn = document.getElementById("clear-tasklist");
+    clearAllBtn.addEventListener("click", ()=>{
+        let list = {
+            taskCount: 0,
+            tasks: {}
+        }
+        let localData = JSON.parse(localStorage.getItem("task-list"));
+        let data = localData.tasks;
+        for(let i of Object.keys(data)) {
+            if(!data[i].done) {
+                list.tasks[++list.taskCount] = data[i];
+            }
+        } 
+        localStorage.setItem("task-list", JSON.stringify(list));
+        displayNotes(list.tasks);
+        removePopup();
+    })
+})
+
 function removePopup() {
     coverScreen.innerHTML = "";
     coverScreen.style.visibility = "hidden";
