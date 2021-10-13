@@ -3,6 +3,7 @@ const coverScreen = document.getElementById("cover-screen");
 const addNote = document.querySelector(".new-note");
 const clearAll = document.querySelector(".clear-all");
 const taskContainer = document.querySelector(".task-container");
+const uploadDataBtn = document.getElementById("upload-data");
 
 let localData = localStorage.getItem("task-list");
 if(!localData) {
@@ -68,6 +69,40 @@ addNote.addEventListener("click", ()=>{
         removePopup();
         displayNotes(tasks);
     })
+})
+
+addNote.addEventListener("contextmenu", (e) => {
+    e.preventDefault();
+
+    let localData = localStorage.getItem("task-list");
+
+    const a = document.createElement("a");
+    a.download = "tasklist-data";
+    a.href = window.URL.createObjectURL(new Blob([localData], {type: "text/plain"}));
+    a.click()
+
+    window.URL.revokeObjectURL(a.href);
+    a.href = "#"
+})
+
+uploadDataBtn.addEventListener("click", (e) => {
+    const input = document.createElement("input");
+    input.type = "file";
+    
+    input.addEventListener("input", () => {
+        const fr = new FileReader();
+
+        fr.addEventListener("load", () => {
+            const data = JSON.parse(fr.result);
+            
+            localStorage.setItem("task-list", JSON.stringify(data));
+            displayNotes(data.tasks);
+        })
+
+        fr.readAsText(input.files[0]);
+    })
+
+    input.click();
 })
 
 let doubleClick = false;
@@ -280,4 +315,7 @@ function displayNotes(tasklist) {
         
         taskContainer.appendChild(note);
     }
+    const totalTasks = Object.keys(tasklist).length;
+
+    uploadDataBtn.style.display = totalTasks === 0 ? "block" : "none";
 }

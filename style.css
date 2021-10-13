@@ -111,6 +111,7 @@ body {
     flex-direction: column;
     padding: 1em;
     animation: popup 0.3s ease-out;
+    z-index: 10;
 }
 
 @keyframes popup {
@@ -178,4 +179,18 @@ body {
 .done-task {
     background-color: lightgreen;
     font-weight: bold;
+}
+
+#upload-data {
+    height: min-content;
+    width: min-content;
+    border-radius: 50%;
+    border: none;
+    padding: 0;
+    font-size: 5em;
+    background-color: transparent;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
